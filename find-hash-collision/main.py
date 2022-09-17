@@ -70,7 +70,7 @@ class CollisionFinder:
     def work_strings(self):
         futures = []
         with ThreadPoolExecutor(max_workers=50) as executor:
-            for rand_message_length in range(1, 1000, 25):
+            for rand_message_length in range(0, 1000, 25):
                 start = rand_message_length + 1
                 end = rand_message_length + 25
                 futures.append(
