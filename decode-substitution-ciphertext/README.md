@@ -53,3 +53,9 @@ The attached file [enc.txt](enc.txt) is a famous text that has been encoded usin
 The decrypted version of [enc.txt](enc.txt) is stored in [dec.txt](dec.txt), and was produced using the finalized key above.
 
 ### Files
+
+- [char-freqs.json](char-freqs.json) - freqencies of individual characters in the encrypted text, not really relied upon; words/patterns were more useful
+- [words-of-length-N-freqs.json](words-of-length-1-freqs.json) - freqencies of words of length N in the encrypted text, very useful for extracting patterns
+- [key.json](key.json) - the finalized key provided as solution
+- [enc.txt](enc.txt) - the encrypted text
+- [dec.txt](dec.txt) - the decrypted version of [enc.txt](enc.txt)
