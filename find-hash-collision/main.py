@@ -38,7 +38,7 @@ class CollisionFinder:
     def work_numbers(self):
         futures = []
         with ThreadPoolExecutor(max_workers=50) as executor:
-            for i in range(0, 100000, 1000):
+            for i in range(0, 1000000, 10000):
                 if i == 0:
                     start = 0
                 else:
