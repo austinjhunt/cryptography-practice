@@ -1,1 +1,10 @@
-# vanderbilt-cs6387-cryptography-homework
+# Vanderbilt CS 6387 - Security Homework Assignment 2 (Crypto Homework)
+
+This is an aggregated repository of a multi-part homework assignment for CS 6387 - Topics in SWE: Security at Vanderbilt University.
+
+There are four parts:
+
+- [Decoding a Substitution Ciphertext](decode-substitution-ciphertext/decrypt-substitution-cipher.py)
+- [Finding Partial Hash Collisions](find-hash-collision/main.py)
+- [Digital Signatures Paper]()
+- [Cipher Implementation](cipher-implementation/main.py)
