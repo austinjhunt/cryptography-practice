@@ -11,6 +11,11 @@ Tutorial on using / cracking substitution ciphers: https://www.youtube.com/watch
 """
 from string import ascii_lowercase
 import json
+import os
+ENCRYPTED_FILE = os.path.join(os.path.dirname(__file__), 'enc.txt')
+DECRYPTED_FILE = os.path.join(os.path.dirname(__file__), 'dec.txt')
+KEY_FILE = os.path.join(os.path.dirname(__file__), 'key.json')
+DIRNAME = os.path.dirname(__file__)
 
 
 def decrypt_content_with_key(key):
@@ -18,19 +23,20 @@ def decrypt_content_with_key(key):
     substitutions to make) decrypt text encrypted with substitution cipher;
     replace with capital letter to avoid overwriting a replacement since
     source is purely lowercase """
-    with open('enc.txt') as f:
+    with open(ENCRYPTED_FILE) as f:
         content = f.read()
     decrypted = content
     for enc, dec in key.items():
         # to avoid overwriting on future iteration if dec is a key in the key dict.
         decrypted = decrypted.replace(enc, dec.upper())
-    with open('dec.txt', 'w') as f:
+    with open(DECRYPTED_FILE, 'w') as f:
         f.write(decrypted)
 
 
 def get_character_frequencies():
     """ Return a dictionary of the counts of each character in the encrypted content """
-    with open('enc.txt') as f:
+    print('Getting character frequencies')
+    with open(ENCRYPTED_FILE) as f:
         content = f.read()
     freqs = {}
     for char in content:
@@ -39,14 +45,19 @@ def get_character_frequencies():
         else:
             freqs[char] = 1
     # sort by value/counts (descending)
-    return {k: v for k, v in sorted(freqs.items(), key=lambda item: item[1], reverse=True)}
+    freqs = {k: v for k, v in sorted(
+        freqs.items(), key=lambda item: item[1], reverse=True)}
+    with open(f'{DIRNAME}/char-freqs.json', 'w') as f:
+        json.dump(freqs, f)
 
 
 def get_word_freqencies():
-    with open('enc.txt') as f:
+    print(f'Getting word frequencies')
+    with open(ENCRYPTED_FILE) as f:
         content = f.read()
     _split = content.split()
     for i in range(1, 7):
+        print(f'Getting word (length={i}) frequencies')
         words_of_this_length = [el for el in _split if len(el) == i]
         # now get frequencies of words of this length
         freqs = {}
@@ -58,10 +69,11 @@ def get_word_freqencies():
         # sort by value/counts (descending)
         freqs = {k: v for k, v in sorted(
             freqs.items(), key=lambda item: item[1], reverse=True)}
-        with open(f'words-of-length-{i}.json', 'w') as f:
+        with open(f'{DIRNAME}/words-of-length-{i}-freqs.json', 'w') as f:
             json.dump(freqs, f)
 
 
+get_character_frequencies()
 get_word_freqencies()
 
 # What I know at this point:
@@ -150,16 +162,17 @@ def get_remaining_characters_not_in_key(key):
 
 
 remaining = get_remaining_characters_not_in_key(key)
-print(remaining)
-# l, m, x
+# remaining: l, m, x
 key['m'] = 'q'  # mUEEN repeated
 key['x'] = 'x'  # SIx, VExED, BOx, used in roman numerals
 key['l'] = 'z'  # THAT’S A BLAlING STRANGE ANSWER, TOO; DOlEN
 
+
+# should not be any remaining characters not in key
 assert not get_remaining_characters_not_in_key(key)
 
+print(f'Creating key.json file')
 sorted_key = dict(sorted(key.items()))
 decrypt_content_with_key(sorted_key)
-with open('key.txt', 'w') as f:
-    for enc, dec in sorted_key.items():
-        f.write(f'{enc}: {dec}\n')
+with open(KEY_FILE, 'w') as f:
+    json.dump(key, f)
