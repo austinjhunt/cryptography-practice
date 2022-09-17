@@ -175,4 +175,4 @@ print(f'Creating key.json file')
 sorted_key = dict(sorted(key.items()))
 decrypt_content_with_key(sorted_key)
 with open(KEY_FILE, 'w') as f:
-    json.dump(key, f)
+    json.dump(sorted_key, f)
