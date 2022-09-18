@@ -6,5 +6,5 @@ There are four parts:
 
 - [Decoding a Substitution Ciphertext](decode-substitution-ciphertext/decrypt-substitution-cipher.py)
 - [Finding Partial Hash Collisions](find-hash-collision/main.py)
-- [Digital Signatures Paper]()
+- [Digital Signatures Paper](digital-signatures-paper/austinjhunt-homework2part3-cs6387.pdf)
 - [Cipher Implementation](cipher-implementation/main.py)
