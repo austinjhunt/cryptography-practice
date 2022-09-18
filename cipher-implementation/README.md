@@ -6,22 +6,24 @@ You must include your code and sample runs including screenshots. If you impleme
 
 ## Chosen cipher: AES
 
-I'm taking some notes on how the AES (Advanced Encryption Standard) cipher algorithm works below, using [this video](https://www.youtube.com/watch?v=O4xNJsjtN6E) as a reference.
-128 bit symmetric block cipher
-takes 128 bits of message converts into 128 bits of ciphertex with some key
-key can be 128, 192, or 256 bits.
+I'm choosing to implement the AES algorithm mainly because it's daunting and I'm bound to learn quite a bit from it.
 
-You have a 4x4 grid, byte0 through 3 in first column, 4 through 7 in second column, etc.
-Everything AES happens on that grid
+I'm taking some notes on how the AES (Advanced Encryption Standard) cipher algorithm works below, using [this video](https://www.youtube.com/watch?v=O4xNJsjtN6E) as a reference. (and many others)
 
-When you have a 128-bit key, you have 10 rounds. When you have a 192-bit key, you have 12 rounds. When you have a 256-bit key, you have 14 rounds.
-The key ends up getting expanded into N+1 chunks, or _round keys_, where N is the number of rounds. So 11 round keys with 128-bit key, 13 round keys for 192-bit key, and 15 round keys for 256-bit key.
-![key expansion, or key scheduling](img/keyschedule.png)
-
-AES is now built into hardware; inherently on Intel chips, AMD chips;
+- 128 bit symmetric block cipher
+- key can be 128, 192, or 256 bits.
+- message broken into 128 bit blocks, potentially padded if not broken evenly
+- initialization vector used for randomization & **semantic security**, a property whereby repeated usage of the scheme under the same key does not allow an attacker to infer relationships between (potentially similar) segments of the encrypted message.
+- State in algorithm represented with a 4x4 grid, byte0 through 3 in first column, 4 through 7 in second column, etc. Everything happens using that grid.
+- Encryption happens one 128-bit block at a time.
+- Broken into N rounds, N = 10 for 128-bit key, N=12 for 192-bit key, N=14 for 256-bit key.
+- You have to generate N+1 round keys (a key for each round plus one)
+  - 11 for 128-bit key, 13 for 192-bit key, 15 for 256-bit key
+    ![key expansion, or key scheduling](img/keyschedule.png)
+- AES is now built into hardware; inherently on Intel chips, AMD chips;
 
 1. Start with plaintext
-2. Expand key into different round keys using a **key schedule**
+2. Expand key into different round keys using a **key schedule**. Will probably write a Python class to handle this alone.
    1. Explained quite well here: [https://www.youtube.com/watch?v=rmqWaktEpcw](https://www.youtube.com/watch?v=rmqWaktEpcw)
 3. Use part of key ($k_0$) for XOR operation
 4. Then do round:
@@ -48,3 +50,5 @@ AES in a nutshell is built on repeated rounds of "SP" - substitution and permuta
 ![rijndael substitution box](img/rijndaelsbox.png)
 Then, for decryption, there is the inverse S-box:
 ![inverse substitution box](img/rijndaelinversesbox.png)
+
+[main.py](main.py) leverages the S box and inverse S box heavily for byte substitution.
