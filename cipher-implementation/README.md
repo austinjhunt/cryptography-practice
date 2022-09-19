@@ -4,7 +4,7 @@ Your cipher should both encrypt and decrypt a message. Your cipher may be one of
 
 You must include your code and sample runs including screenshots. If you implement a known cipher, it will have test inputs for verification and those should be used.
 
-## Chosen cipher: AES
+## Chosen cipher: AES (Cipher Block Chaining / CBC)
 
 I'm choosing to implement the AES algorithm mainly because it's daunting and I'm bound to learn quite a bit from it.
 
@@ -52,3 +52,21 @@ Then, for decryption, there is the inverse S-box:
 ![inverse substitution box](img/rijndaelinversesbox.png)
 
 [main.py](main.py) leverages the S box and inverse S box heavily for byte substitution.
+
+## Testing
+
+As outlined in section 6.4.2 of the [AESAVS.pdf](AESAVS.pdf) (The Advanced Encryption Standard Algorithm Validation Suite), I've implemented the Monte Carlo Algorithm for testing my implementation of AES, which draws from [Boppreh's implementation on GitHub](https://github.com/boppreh/aes) but simplifies a bit of the details. The Monte Carlo Test (MCT) is one of the test categories that makes up the AESAVS. Each Monte Carlo Test ciphers 100 pseudorandom textx. My CBC mode implementation uses an initialization vecotr, which is used in the beginning of each psuedorandom text.
+
+The REQUEST file for the MCT test contains a set of pseudorandomly generated initial values for the Monte Carlo function described below. The initial values consist of a key, an IV (for all modes except ECB), and a plaintext for encryption (or a ciphertext for decryption). The following is a sample data set:
+
+```
+KEY = 9dc2c84a37850c11699818605f47958c
+IV = 256953b2feab2a04ae0180d8335bbed6 PLAINTEXT = 2e586692e647f5028ec6fa47a55a2aab
+```
+
+The RESPONSE file for the MCT test contains a series of data sets consisting of a key, an IV (for all modes except ECB), a plaintext for encryption (or ciphertext for decryption), and a ciphertext for encryption (or a plaintext for decryption). The following is a sample data set:
+
+```
+KEY = 9dc2c84a37850c11699818605f47958c
+IV = 256953b2feab2a04ae0180d8335bbed6 PLAINTEXT = 2e586692e647f5028ec6fa47a55a2aab CIPHERTEXT = 1b1ebd1fc45ec43037fd4844241a437f
+```
