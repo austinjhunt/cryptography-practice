@@ -70,3 +70,11 @@ The RESPONSE file for the MCT test contains a series of data sets consisting of 
 KEY = 9dc2c84a37850c11699818605f47958c
 IV = 256953b2feab2a04ae0180d8335bbed6 PLAINTEXT = 2e586692e647f5028ec6fa47a55a2aab CIPHERTEXT = 1b1ebd1fc45ec43037fd4844241a437f
 ```
+
+### Running the tests
+
+From this directory, run the following command:
+
+```
+python3 -m unittest testing.tests
+```
