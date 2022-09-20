@@ -12,21 +12,26 @@ from aescipher import AES
 
 if __name__ == "__main__":
     # AES class parameterizes key sizes
-    aes = AES(aes_key_size_bits=128)
+
     message = "Hello, my name is Austin Hunt."
-    iv = os.urandom(16)
-    ciphertext = aes.encrypt(
-        plaintext=message,
-        initialization_vector=iv
-    )
-
-    print('Encryption complete.')
-    print(f'Cipher text: {ciphertext}')
-
-    print('\n\n')
-
-    decrypted = aes.decrypt(
-        ciphertext=ciphertext,
-        initialization_vector=iv
-    )
-    print(f'Decrypted: {decrypted}')
+    for i in range(3):
+        keysize = {0: 128, 1: 192, 2: 256}[i]
+        print(f'Testing with key size: {keysize} bits ')
+        aes = AES(aes_key_size_bits=keysize)
+        iv = os.urandom(16)
+        print(f'The message is: {message}')
+        print(f'The initialization vector is: {iv}')
+        print('Beginning encryption')
+        ciphertext = aes.encrypt(
+            plaintext=message,
+            initialization_vector=iv
+        )
+        print('Encryption complete.')
+        print(f'The ciphertext is: {ciphertext}')
+        print('\n')
+        print(f'Decrypting using the same initialization vector {iv}')
+        decrypted = aes.decrypt(
+            ciphertext=ciphertext,
+            initialization_vector=iv
+        )
+        print(f'Decrypted text: {decrypted}')
