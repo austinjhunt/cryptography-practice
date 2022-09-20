@@ -1,8 +1,8 @@
+import csv
 import os
 import json
 import unittest
 from aescipher import AES
-
 INIT_VECTOR_FIXED_SIZE_BYTES = 16
 
 
@@ -44,5 +44,63 @@ class TestAESCipher(unittest.TestCase):
         self.check_multiple_random_ivs(cipher)
     #################### TEST KEY SIZES #########################
 
-class TestMonteCarlo(unittest.TestCase):
-    pass
+
+class TestAVS(unittest.TestCase):
+    def setUp(self):
+        with open(os.path.join(os.path.dirname(__file__), 'aesavstestdata.csv')) as f:
+            reader = csv.reader(f)
+            next(reader)
+            self.keysize_128_tests = [l for l in reader if l[0] == '128']
+            self.keysize_192_tests = [l for l in reader if l[0] == '192']
+            self.keysize_256_tests = [l for l in reader if l[0] == '256']
+
+    def test_128bit_keysize(self):
+        aes = AES(aes_key_size_bits=128)
+        aes.set_master_key(b'0000000000000000')
+        for t in self.keysize_128_tests:
+            plaintextoriv, ct = t[1], t[2]
+            iv, plaintext = plaintextoriv[16:], plaintextoriv[:16]
+            plaintext = plaintext.encode('utf-8')
+            iv = iv.encode('utf-8')
+            ct = ct.encode('utf-8')
+            ciphertext = aes.encrypt(
+                plaintext=plaintext,
+                initialization_vector=iv
+            )
+            self.assertEqual(
+                ct, ciphertext
+            )
+
+    def test_192bit_keysize(self):
+        aes = AES(aes_key_size_bits=192)
+        aes.set_master_key(b'000000000000000000000000')
+        for t in self.keysize_192_tests:
+            plaintextoriv, ct = t[1], t[2]
+            iv, plaintext = plaintextoriv[16:], plaintextoriv[:16]
+            plaintext = plaintext.encode('utf-8')
+            iv = iv.encode('utf-8')
+            ct = ct.encode('utf-8')
+            ciphertext = aes.encrypt(
+                plaintext=plaintext,
+                initialization_vector=iv
+            )
+            self.assertEqual(
+                ct, ciphertext
+            )
+
+    def test_256bit_keysize(self):
+        aes = AES(aes_key_size_bits=192)
+        aes.set_master_key(b'00000000000000000000000000000000')
+        for t in self.keysize_256_tests:
+            plaintextoriv, ct = t[1], t[2]
+            iv, plaintext = plaintextoriv[16:], plaintextoriv[:16]
+            plaintext = plaintext.encode('utf-8')
+            iv = iv.encode('utf-8')
+            ct = ct.encode('utf-8')
+            ciphertext = aes.encrypt(
+                plaintext=plaintext,
+                initialization_vector=iv
+            )
+            self.assertEqual(
+                ct, ciphertext
+            )

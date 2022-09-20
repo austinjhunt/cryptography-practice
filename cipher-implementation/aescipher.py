@@ -15,7 +15,7 @@ from scheduler import KeyScheduler
 
 
 class AES(Util):
-    def __init__(self, aes_key_size_bits: int = 128):
+    def __init__(self, aes_key_size_bits: int = 128, master_key=None):
         super().__init__()
 
         self.aes_key_size = aes_key_size_bits // 8
@@ -25,9 +25,28 @@ class AES(Util):
         self.block_size = 16
         self.iv_size = self.block_size
         self.num_rounds = {128: 10, 192: 12, 256: 14}[aes_key_size_bits]
+        if not master_key:
+            self.master_key = self.generate_random_aes_key()
+            # print(f'Master key generated: {self.master_key}')
+            self.key_scheduler = KeyScheduler()
+            self.round_keys = self.key_scheduler.get_key_expansion(
+                base_key=self.master_key,
+                key_columns=self._convert_byte_array_to_state_matrix(
+                    self.master_key),
+                num_rounds=self.num_rounds
+            )
+            # print(f'{len(self.round_keys)} round keys generated.')
+            # for i, r in enumerate(self.round_keys):
+            # print(f'Round key {i} length = {len(r)}')
 
-        self.master_key = self.generate_random_aes_key()
-        print(f'Master key generated: {self.master_key}')
+    def generate_random_aes_key(self):
+        """ Generate a random AES base key using the bytes size self.aes_key_size """
+        return os.urandom(self.aes_key_size)
+
+    def set_master_key(self, key):
+        if isinstance(key, str):
+            key = key.encode('utf-8')
+        self.master_key = key
         self.key_scheduler = KeyScheduler()
         self.round_keys = self.key_scheduler.get_key_expansion(
             base_key=self.master_key,
@@ -35,13 +54,9 @@ class AES(Util):
                 self.master_key),
             num_rounds=self.num_rounds
         )
-        print(f'{len(self.round_keys)} round keys generated.')
-        for i, r in enumerate(self.round_keys):
-            print(f'Round key {i} length = {len(r)}')
-
-    def generate_random_aes_key(self):
-        """ Generate a random AES base key using the bytes size self.aes_key_size """
-        return os.urandom(self.aes_key_size)
+        # print(f'{len(self.round_keys)} round keys generated.')
+        # for i, r in enumerate(self.round_keys):
+        # print(f'Round key {i} length = {len(r)}')
 
     def _add_round_key(self, state, round_key):
         """
@@ -164,14 +179,14 @@ class AES(Util):
 
         decrypted_blocks = []
         previous = initialization_vector
-        print(f'starting prev = {previous}')
+        # print(f'starting prev = {previous}')
         blocks = self._split_into_blocks(ciphertext)
-        print(f'Split ciphertext into {len(blocks)} blocks for decryption')
+        # print(f'Split ciphertext into {len(blocks)} blocks for decryption')
         for ciphertext_block in blocks:
             decrypted_block = self.xor_bytes(
                 previous, self.decrypt_block(ciphertext_block)
             )
-            print(f'Decrypted block: {decrypted_block}')
+            # print(f'Decrypted block: {decrypted_block}')
             decrypted_blocks.append(decrypted_block)
             previous = ciphertext_block
         return self._remove_padding(b''.join(decrypted_blocks)).decode('utf-8')
@@ -249,6 +264,8 @@ class AES(Util):
         """ Utility method for encryption """
         if isinstance(plaintext, str):
             plaintext = plaintext.encode('utf-8')
+        elif isinstance(plaintext, int):
+            plaintext = str(plaintext).encode('utf-8')
 
         # step 1: key expansion into 128 bit round keys / blocks - already done at AES instantiation
 
@@ -259,7 +276,7 @@ class AES(Util):
         encrypted_blocks = []
         prev = initialization_vector
         blocks = self._split_into_blocks(plaintext)
-        print(f'Split plaintext into {len(blocks)} blocks for encryption')
+        # print(f'Split plaintext into {len(blocks)} blocks for encryption')
         for plaintext_block in blocks:
             encrypted_block = self._encrypt_block(
                 self.xor_bytes(

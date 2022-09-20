@@ -82,8 +82,8 @@ class KeyScheduler(Util):
         '''
         assert len(word) == 4
         sub = bytes((self.inv_sbox[w] for w in word))
-        print(
-            f'inverse substitution 32 bit word for 32 word input {word} is {sub}')
+        # print(
+        #    f'inverse substitution 32 bit word for 32 word input {word} is {sub}')
         return sub
 
     def get_key_expansion(self, base_key, key_columns, num_rounds):

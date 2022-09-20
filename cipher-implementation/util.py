@@ -13,7 +13,7 @@ class Util(Rijndael):
         """ Pad plaintext to a multiple of 128 bits / 16 bytes to align
         with fixed 16 byte block size """
         padding_needed = self.block_size - (len(plaintext) % self.block_size)
-        print(f'Adding {padding_needed} bytes of padding to plaintext')
+        # print(f'Adding {padding_needed} bytes of padding to plaintext')
         padded = plaintext + bytes([padding_needed] * padding_needed)
         # Use the actual value of the needed padding as the padding
         # so that it can be removed easily by getting the last value
@@ -25,14 +25,14 @@ class Util(Rijndael):
         Removes padding if any; since each padding byte actually IS the length
         of the total padding that was added to end, just get last value
         """
-        print(f'Checking for padding on plaintext: {plaintext}')
+        # print(f'Checking for padding on plaintext: {plaintext}')
         padding_added = plaintext[-1]
-        print(f'Padding added: {padding_added}')
+        # print(f'Padding added: {padding_added}')
         assert padding_added > 0
         message = plaintext[:-padding_added]
         padding = plaintext[-padding_added:]
-        print(f'Message={message}')
-        print(f'Padding={padding}')
+        # print(f'Message={message}')
+        # print(f'Padding={padding}')
         assert all(p == padding_added for p in padding)
         return message
     ## Padding ##
@@ -51,11 +51,11 @@ class Util(Rijndael):
         AES operates on a 4 × 4 column-major order array of bytes, termed the state
         Convert a given 16-byte word into a 4x4 matrix
         """
-        print(f'Converting byte array {word} to 4 x 4 matrix')
+        # print(f'Converting byte array {word} to 4 x 4 matrix')
         matrix = []
         for i in range(0, len(word), 4):
             matrix.append(list(word[i: i + 4]))
-        print(f'Matrix: {matrix}')
+        # print(f'Matrix: {matrix}')
         return matrix
 
     def _convert_state_matrix_to_byte_array(self, matrix: list):
@@ -87,8 +87,8 @@ class Util(Rijndael):
         """ Given the length in bits of the base AES key,
         return the number of 32 bit words / chunks to break the key into. """
         result = num_key_bits // 32
-        print(
-            f'Splitting key of size {num_key_bits} bits into {result} 32 bit chunks')
+        # print(
+        #     f'Splitting key of size {num_key_bits} bits into {result} 32 bit chunks')
         return result
 
     def get_num_round_keys(self, num_key_bits: int = 128):

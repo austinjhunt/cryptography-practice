@@ -55,21 +55,16 @@ Then, for decryption, there is the inverse S-box:
 
 ## Testing
 
-As outlined in section 6.4.2 of the [AESAVS.pdf](AESAVS.pdf) (The Advanced Encryption Standard Algorithm Validation Suite), I've implemented the Monte Carlo Algorithm for testing my implementation of AES, which draws from [Boppreh's implementation on GitHub](https://github.com/boppreh/aes) but simplifies a bit of the details. The Monte Carlo Test (MCT) is one of the test categories that makes up the AESAVS. Each Monte Carlo Test ciphers 100 pseudorandom textx. My CBC mode implementation uses an initialization vecotr, which is used in the beginning of each psuedorandom text.
+For testing, I am referencing Appendices B through E of the [AESAVS](AESAVS.pdf) document included in this folder. These appendices contain values for each of the four types of Known Answer Test (GFSBox, KeySBox, Variable Key, Variable Text).
 
-The REQUEST file for the MCT test contains a set of pseudorandomly generated initial values for the Monte Carlo function described below. The initial values consist of a key, an IV (for all modes except ECB), and a plaintext for encryption (or a ciphertext for decryption). The following is a sample data set:
+One thing I'm a bit confused about is that [AES requires the initialization vector to be 16 bytes](https://crypto.stackexchange.com/questions/50782/what-size-of-initialization-vector-iv-is-needed-for-aes-encryption), but the ones the AESAVS provides are 32 bytes.
 
-```
-KEY = 9dc2c84a37850c11699818605f47958c
-IV = 256953b2feab2a04ae0180d8335bbed6 PLAINTEXT = 2e586692e647f5028ec6fa47a55a2aab
-```
+I've included a screenshot of the test data from Appendix B (GFSBox Known Answer Test Values) below:
+![GFSBox Test Data](testing/test-data.png)
 
-The RESPONSE file for the MCT test contains a series of data sets consisting of a key, an IV (for all modes except ECB), a plaintext for encryption (or ciphertext for decryption), and a ciphertext for encryption (or a plaintext for decryption). The following is a sample data set:
+I've created a [csv](testing/aesavstestdata.csv) file containing the values in each of these tables, grouped together by the field `keysize`.
 
-```
-KEY = 9dc2c84a37850c11699818605f47958c
-IV = 256953b2feab2a04ae0180d8335bbed6 PLAINTEXT = 2e586692e647f5028ec6fa47a55a2aab CIPHERTEXT = 1b1ebd1fc45ec43037fd4844241a437f
-```
+As of right now, my tests are failing as the cipher is not producing the expected ciphertext. I believe it's due to me not interpreting the "plaintext or IV" column of the provided tables correctly. Since I know IV has to be 16 bytes, my test methods are simply splitting the "plaintext or IV" value in half, so plaintext becomes the first 16 bytes and IV becomes the second 16 bytes. This is probably not the right way to run the tests.
 
 ### Running the tests
 
